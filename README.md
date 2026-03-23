@@ -74,7 +74,7 @@ The application is based on a relational database and includes the following ent
 - Attendance  
 
 <p align="center">
-  <img src="docs/diagram.png" alt="Database Diagram" width="700"/>
+  <img src="diagram.png" alt="Database Diagram" width="700"/>
 </p>
 
 <p align="center">
