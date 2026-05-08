@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Enrollments — School Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+    <div class="page-header">
+        <h1>Enrollments</h1>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/web/enrollments/new}" class="btn btn-primary">+ Enroll student</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Enrolled at</th>
+                <th>Grade</th>
+                <th sec:authorize="hasRole('ADMIN')">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${enrollments.empty}">
+                <td colspan="6" class="table-empty">No enrollments found.</td>
+            </tr>
+            <tr th:each="e, i : ${enrollments}">
+                <td th:text="${i.index + 1}"></td>
+                <td th:text="${e.student?.firstName} + ' ' + ${e.student?.lastName}"></td>
+                <td th:text="${e.course?.name}"></td>
+                <td th:text="${e.enrolledAt}"></td>
+                <td>
+                    <span th:if="${e.grade != null}" class="chip"
+                          th:text="${e.grade.value} + '/10'"></span>
+                    <span th:if="${e.grade == null}" class="text-muted">—</span>
+                </td>
+                <td sec:authorize="hasRole('ADMIN')" class="actions">
+                    <form th:action="@{/web/enrollments/{id}/delete(id=${e.id})}" method="post"
+                          onsubmit="return confirm('Delete this enrollment?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

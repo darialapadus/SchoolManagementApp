@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Attendance — School Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+    <div class="page-header"><h1>Student Attendance</h1></div>
+
+    <div class="card" sec:authorize="hasRole('ADMIN')">
+        <div class="card-title">Mark attendance</div>
+        <form th:action="@{/web/attendance}" method="post" novalidate
+              style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+            <div class="form-group" style="flex:2;min-width:180px;margin:0;">
+                <label>Student <span class="required">*</span></label>
+                <select name="studentId" required>
+                    <option value="">-- Student --</option>
+                    <option th:each="s : ${students}" th:value="${s.id}"
+                            th:text="${s.firstName} + ' ' + ${s.lastName}"></option>
+                </select>
+            </div>
+            <div class="form-group" style="flex:2;min-width:180px;margin:0;">
+                <label>Course <span class="required">*</span></label>
+                <select name="courseId" required>
+                    <option value="">-- Course --</option>
+                    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+            </div>
+            <div class="form-group" style="flex:1;min-width:150px;margin:0;">
+                <label>Date <span class="required">*</span></label>
+                <input type="date" name="date" required th:value="${#dates.format(#dates.createNow(),'yyyy-MM-dd')}"/>
+            </div>
+            <div class="form-group" style="min-width:120px;margin:0;">
+                <label>Status <span class="required">*</span></label>
+                <select name="present" required>
+                    <option value="true">Present ✅</option>
+                    <option value="false">Absent ❌</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="height:42px;">Save</button>
+        </form>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th sec:authorize="hasRole('ADMIN')">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${attendances.empty}">
+                <td colspan="6" class="table-empty">No attendance records found.</td>
+            </tr>
+            <tr th:each="a, i : ${attendances}">
+                <td th:text="${i.index + 1}"></td>
+                <td th:text="${a.student?.firstName} + ' ' + ${a.student?.lastName}"></td>
+                <td th:text="${a.course?.name}"></td>
+                <td th:text="${a.date}"></td>
+                <td>
+                    <span th:if="${a.present}" class="chip" style="background:#d4edda;color:#155724;">Present ✅</span>
+                    <span th:unless="${a.present}" class="chip" style="background:#f8d7da;color:#721c24;">Absent ❌</span>
+                </td>
+                <td sec:authorize="hasRole('ADMIN')" class="actions">
+                    <form th:action="@{/web/attendance/{id}/delete(id=${a.id})}" method="post"
+                          onsubmit="return confirm('Delete this record?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

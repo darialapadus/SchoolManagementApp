@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Login — School Management</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 380px;
+        }
+        h1 {
+            font-size: 1.6rem;
+            color: #1a1a2e;
+            margin-bottom: 0.3rem;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.8rem;
+        }
+        .alert {
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .alert-error { background: #fde8e8; color: #c0392b; border: 1px solid #f5b7b1; }
+        .alert-success { background: #e8f8f0; color: #1e8449; border: 1px solid #a9dfbf; }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.88rem;
+            color: #555;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover { background: #3451d1; }
+        .hint {
+            margin-top: 1.4rem;
+            padding: 0.8rem;
+            background: #f8f9ff;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+        .hint p { margin-bottom: 0.2rem; }
+        .hint code {
+            background: #e8ecff;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>School Management</h1>
+    <p class="subtitle">Sign in to continue</p>
+
+    <div th:if="${param.error}" class="alert alert-error">
+        Invalid username or password.
+    </div>
+    <div th:if="${param.logout}" class="alert alert-success">
+        You have been logged out successfully.
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username"
+               placeholder="admin / user" required autofocus/>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"
+               placeholder="••••••••" required/>
+
+        <div class="remember">
+            <input type="checkbox" id="remember-me" name="remember-me"/>
+            <label for="remember-me" style="margin-bottom:0; font-weight:400;">
+                Remember me for 7 days
+            </label>
+        </div>
+
+        <button type="submit">Sign in</button>
+    </form>
+
+    <div class="hint">
+        <p><strong>Default accounts:</strong></p>
+        <p>Admin: <code>admin</code> / <code>admin123</code></p>
+        <p>User: <code>user</code> / <code>user123</code></p>
+    </div>
+</div>
+</body>
+</html>

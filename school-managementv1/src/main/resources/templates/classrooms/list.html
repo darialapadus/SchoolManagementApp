@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Classrooms — School Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+    <div class="page-header">
+        <h1>Classrooms</h1>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/web/classrooms/new}" class="btn btn-primary">+ Add classroom</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Building</th>
+                <th>Room number</th>
+                <th>Capacity</th>
+                <th>Courses</th>
+                <th sec:authorize="hasRole('ADMIN')">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${classrooms.empty}">
+                <td colspan="6" class="table-empty">No classrooms found.</td>
+            </tr>
+            <tr th:each="c, i : ${classrooms}">
+                <td th:text="${i.index + 1}"></td>
+                <td th:text="${c.building}"></td>
+                <td th:text="${c.roomNumber}"></td>
+                <td th:text="${c.capacity} + ' seats'"></td>
+                <td><span class="chip" th:text="${c.courses.size()} + ' course(s)'"></span></td>
+                <td sec:authorize="hasRole('ADMIN')" class="actions">
+                    <a th:href="@{/web/classrooms/{id}/edit(id=${c.id})}" class="btn btn-sm btn-outline">Edit</a>
+                    <form th:action="@{/web/classrooms/{id}/delete(id=${c.id})}" method="post"
+                          onsubmit="return confirm('Delete this classroom?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

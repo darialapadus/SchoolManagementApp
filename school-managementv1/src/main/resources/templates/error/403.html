@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>403 — Access Denied</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5;
+               display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card { background: white; border-radius: 12px; padding: 2.5rem;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.10); text-align: center; max-width: 400px; }
+        .icon { font-size: 4rem; margin-bottom: 1rem; }
+        h1 { color: #e74c3c; font-size: 2rem; margin-bottom: 0.5rem; }
+        p { color: #666; margin-bottom: 1.5rem; }
+        a { display: inline-block; padding: 0.6rem 1.4rem; background: #4361ee;
+            color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
+        a:hover { background: #3451d1; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="icon">🚫</div>
+    <h1>403</h1>
+    <p>You do not have permission to access this resource.<br/>
+       This action requires the <strong>ADMIN</strong> role.</p>
+    <a th:href="@{/home}">Back to home</a>
+</div>
+</body>
+</html>

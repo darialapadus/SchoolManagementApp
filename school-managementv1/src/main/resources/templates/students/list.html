@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Students — School Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+    <div class="page-header">
+        <h1>Students</h1>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/web/students/new}" class="btn btn-primary">+ Add student</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th><a class="sort-link" th:href="@{/web/students(sort='firstName',dir=${sort=='firstName' and dir=='asc'?'desc':'asc'},size=${size})}">First name</a></th>
+                <th><a class="sort-link" th:href="@{/web/students(sort='lastName', dir=${sort=='lastName'  and dir=='asc'?'desc':'asc'},size=${size})}">Last name</a></th>
+                <th><a class="sort-link" th:href="@{/web/students(sort='email',     dir=${sort=='email'      and dir=='asc'?'desc':'asc'},size=${size})}">Email</a></th>
+                <th><a class="sort-link" th:href="@{/web/students(sort='gradeLevel',dir=${sort=='gradeLevel' and dir=='asc'?'desc':'asc'},size=${size})}">Grade</a></th>
+                <th sec:authorize="hasRole('ADMIN')">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${page.content.empty}">
+                <td colspan="6" class="table-empty">No students found.</td>
+            </tr>
+            <tr th:each="s, i : ${page.content}">
+                <td th:text="${page.number * page.size + i.index + 1}"></td>
+                <td th:text="${s.firstName}"></td>
+                <td th:text="${s.lastName}"></td>
+                <td th:text="${s.email}"></td>
+                <td><span class="chip" th:text="'Grade ' + ${s.gradeLevel}"></span></td>
+                <td sec:authorize="hasRole('ADMIN')" class="actions">
+                    <a th:href="@{/web/students/{id}/edit(id=${s.id})}" class="btn btn-sm btn-outline">Edit</a>
+                    <form th:action="@{/web/students/{id}/delete(id=${s.id})}" method="post"
+                          onsubmit="return confirm('Delete this student?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination" th:if="${page.totalPages > 1}">
+        <a th:href="@{/web/students(page=0,size=${size},sort=${sort},dir=${dir})}"
+           th:classappend="${page.first} ? 'disabled'">«</a>
+        <a th:href="@{/web/students(page=${page.number - 1},size=${size},sort=${sort},dir=${dir})}"
+           th:classappend="${page.first} ? 'disabled'">‹</a>
+        <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+              th:if="${i >= page.number - 2 and i <= page.number + 2}">
+            <a th:href="@{/web/students(page=${i},size=${size},sort=${sort},dir=${dir})}"
+               th:text="${i + 1}"
+               th:classappend="${i == page.number} ? 'active'"></a>
+        </span>
+        <a th:href="@{/web/students(page=${page.number + 1},size=${size},sort=${sort},dir=${dir})}"
+           th:classappend="${page.last} ? 'disabled'">›</a>
+        <a th:href="@{/web/students(page=${page.totalPages - 1},size=${size},sort=${sort},dir=${dir})}"
+           th:classappend="${page.last} ? 'disabled'">»</a>
+        <span class="pagination-info"
+              th:text="${page.number * page.size + 1} + '-' + ${#numbers.min(page.number * page.size + page.size, page.totalElements)} + ' of ' + ${page.totalElements}"></span>
+    </div>
+</div>
+</body>
+</html>

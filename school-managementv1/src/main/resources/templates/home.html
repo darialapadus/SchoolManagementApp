@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Home — School Management</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+        nav {
+            background: #1a1a2e;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav h2 { font-size: 1.2rem; }
+        nav .user-info { font-size: 0.9rem; display: flex; align-items: center; gap: 1rem; }
+        nav .role-badge {
+            background: #4361ee;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        nav .role-badge.admin { background: #e74c3c; }
+        form.logout-form { display: inline; }
+        button.logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        button.logout-btn:hover { background: rgba(255,255,255,0.1); }
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        h1 { color: #1a1a2e; margin-bottom: 0.4rem; }
+        .subtitle { color: #666; margin-bottom: 2rem; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.2rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,0.12); }
+        .card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .card h3 { font-size: 1rem; color: #1a1a2e; }
+        .card p { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+        .swagger-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.6rem 1.2rem;
+            background: #4361ee;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .swagger-link:hover { background: #3451d1; }
+        .admin-note {
+            margin-top: 1rem;
+            padding: 0.8rem 1rem;
+            background: #fff8e1;
+            border-left: 3px solid #f39c12;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <h2>School Management</h2>
+    <div class="user-info">
+        <span>Welcome, <strong sec:authentication="name">user</strong>!</span>
+        <span class="role-badge" sec:authorize="hasRole('ADMIN')">ADMIN</span>
+        <span class="role-badge" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">USER</span>
+        <form class="logout-form" th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Select a section to continue</p>
+
+    <div class="grid">
+        <a class="card" th:href="@{/web/students}">
+            <div class="icon">🎓</div>
+            <h3>Students</h3>
+            <p>Manage students</p>
+        </a>
+        <a class="card" th:href="@{/web/teachers}">
+            <div class="icon">👨‍🏫</div>
+            <h3>Teachers</h3>
+            <p>Manage teachers</p>
+        </a>
+        <a class="card" th:href="@{/web/courses}">
+            <div class="icon">📚</div>
+            <h3>Courses</h3>
+            <p>Manage courses</p>
+        </a>
+        <a class="card" th:href="@{/web/subjects}">
+            <div class="icon">📋</div>
+            <h3>Subjects</h3>
+            <p>Academic subjects</p>
+        </a>
+        <a class="card" th:href="@{/web/classrooms}">
+            <div class="icon">🏫</div>
+            <h3>Classrooms</h3>
+            <p>Manage classrooms</p>
+        </a>
+        <a class="card" th:href="@{/web/enrollments}">
+            <div class="icon">📝</div>
+            <h3>Enrollments</h3>
+            <p>Student enrollments</p>
+        </a>
+        <a class="card" th:href="@{/web/grades}">
+            <div class="icon">⭐</div>
+            <h3>Grades</h3>
+            <p>Student grades</p>
+        </a>
+        <a class="card" th:href="@{/web/attendance}">
+            <div class="icon">✅</div>
+            <h3>Attendance</h3>
+            <p>Track attendance</p>
+        </a>
+    </div>
+
+    <a class="swagger-link" th:href="@{/swagger-ui.html}" target="_blank">
+        Open Swagger UI (API Docs)
+    </a>
+
+    <div class="admin-note" sec:authorize="hasRole('ADMIN')">
+        You are logged in as <strong>ADMIN</strong> — full access to all operations (GET, POST, PUT, DELETE).
+    </div>
+    <div class="admin-note" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">
+        You are logged in as <strong>USER</strong> — read-only access (GET only).
+    </div>
+</div>
+</body>
+</html>

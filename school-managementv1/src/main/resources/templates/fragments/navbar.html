@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav class="navbar" th:fragment="navbar">
+    <a class="navbar-brand" th:href="@{/home}">🏫 School Management</a>
+    <div class="navbar-links">
+        <a th:href="@{/web/students}">Students</a>
+        <a th:href="@{/web/teachers}">Teachers</a>
+        <a th:href="@{/web/subjects}">Subjects</a>
+        <a th:href="@{/web/courses}">Courses</a>
+        <a th:href="@{/web/classrooms}">Classrooms</a>
+        <a th:href="@{/web/enrollments}">Enrollments</a>
+        <a th:href="@{/web/grades}">Grades</a>
+        <a th:href="@{/web/attendance}">Attendance</a>
+    </div>
+    <div class="navbar-user">
+        <span sec:authentication="name"></span>
+        <span class="badge badge-admin" sec:authorize="hasRole('ADMIN')">ADMIN</span>
+        <span class="badge badge-user"  sec:authorize="hasRole('USER') and !hasRole('ADMIN')">USER</span>
+        <form th:action="@{/logout}" method="post" style="margin:0">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </div>
+</nav>
+</body>
+</html>

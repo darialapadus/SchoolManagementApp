@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Grades — School Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+    <div class="page-header"><h1>Student Grades</h1></div>
+
+    <div class="card" sec:authorize="hasRole('ADMIN')">
+        <div class="card-title">Set / update grade</div>
+        <form th:action="@{/web/grades}" method="post" novalidate style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+            <div class="form-group" style="flex:2;min-width:200px;margin:0;">
+                <label>Enrollment (Student — Course) <span class="required">*</span></label>
+                <select name="enrollmentId" required>
+                    <option value="">-- Select --</option>
+                    <option th:each="e : ${enrollments}"
+                            th:value="${e.id}"
+                            th:text="${e.student?.firstName} + ' ' + ${e.student?.lastName} + ' → ' + ${e.course?.name}"></option>
+                </select>
+            </div>
+            <div class="form-group" style="flex:1;min-width:120px;margin:0;">
+                <label>Grade (1–10) <span class="required">*</span></label>
+                <input type="number" name="value" required min="1" max="10" placeholder="1–10"/>
+            </div>
+            <button type="submit" class="btn btn-primary" style="height:42px;">Save grade</button>
+        </form>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Grade</th>
+                <th>Graded at</th>
+                <th sec:authorize="hasRole('ADMIN')">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${grades.empty}">
+                <td colspan="6" class="table-empty">No grades recorded.</td>
+            </tr>
+            <tr th:each="g, i : ${grades}">
+                <td th:text="${i.index + 1}"></td>
+                <td th:text="${g.enrollment?.student?.firstName} + ' ' + ${g.enrollment?.student?.lastName}"></td>
+                <td th:text="${g.enrollment?.course?.name}"></td>
+                <td>
+                    <span class="chip"
+                          th:style="${g.value >= 5} ? 'background:#d4edda;color:#155724' : 'background:#f8d7da;color:#721c24'"
+                          th:text="${g.value} + '/10'"></span>
+                </td>
+                <td th:text="${g.gradedAt}"></td>
+                <td sec:authorize="hasRole('ADMIN')" class="actions">
+                    <form th:action="@{/web/grades/{id}/delete(id=${g.id})}" method="post"
+                          onsubmit="return confirm('Delete this grade?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
